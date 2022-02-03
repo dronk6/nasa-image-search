@@ -19,6 +19,7 @@ export class NasaImageSearch extends LitElement {
   static get properties() {
     return {
       nasaResults: { type: Array },
+      page: { type: Number, reflect: true },
     };
   }
 
@@ -29,9 +30,17 @@ export class NasaImageSearch extends LitElement {
     this.getNASAData();
   }
 
+  updated(changedProperties) {
+    changedProperties.forEach((oldValue, propName) => {
+      if (propName === 'page' && this[propName]) {
+        this.getNASAData();
+      }
+    });
+  }
+
   async getNASAData() {
     return fetch(
-      'https://images-api.nasa.gov/search?q=rocket&page=1&media_type=image'
+      `https://images-api.nasa.gov/search?q=rocket&page=${this.page}&media_type=image`
     )
       .then(resp => {
         if (resp.ok) {
@@ -62,6 +71,7 @@ export class NasaImageSearch extends LitElement {
   constructor() {
     super();
     this.nasaResults = [];
+    this.page = 1;
   }
 
   render() {
