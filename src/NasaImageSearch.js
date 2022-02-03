@@ -1,6 +1,5 @@
 import { html, css, LitElement } from 'lit';
-// eslint-disable-next-line no-unused-vars
-import { AccentCard } from '@lrnwebcomponents/accent-card';
+import '@lrnwebcomponents/accent-card';
 
 export class NasaImageSearch extends LitElement {
   static get tag() {
@@ -76,8 +75,10 @@ export class NasaImageSearch extends LitElement {
       ${this.nasaResults.map(
         item => html`
           <accent-card
-            image-src="${new URL(item.imagesrc, import.meta.url).href}"
-            image-align="left"
+            image-src="${item.imagesrc}"
+            image-align="right"
+            horizontal
+            style="max-width:600px;"
           >
             <div slot="heading">${item.title}</div>
             <div slot="content">${item.description}</div>
