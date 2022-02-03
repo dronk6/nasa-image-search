@@ -1,4 +1,5 @@
 import { html, css, LitElement } from 'lit';
+import '@lrnwebcomponents/accent-card';
 
 export class NasaImageSearch extends LitElement {
   static get tag() {
@@ -67,10 +68,7 @@ export class NasaImageSearch extends LitElement {
     return html`
       ${this.nasaResults.map(
         item => html`
-          <accent-card
-            imagesrc="${new URL(item.imagesrc, import.meta.url).href}"
-            image-align="left"
-          >
+          <accent-card image-src="${item.imagesrc}" image-align="right">
             <div slot="heading">${item.title}</div>
             <div slot="content">${item.description}</div>
           </accent-card>
