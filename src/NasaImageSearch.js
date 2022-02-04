@@ -13,13 +13,16 @@ export class NasaImageSearch extends LitElement {
         padding: 25px;
         color: var(--nasa-image-search-text-color, #000);
       }
+      .pageInput {
+        margin-bottom: 20px;
+      }
     `;
   }
 
   static get properties() {
     return {
       nasaResults: { type: Array },
-      page: { type: Number, reflect: true },
+      page: { type: String, reflect: true },
     };
   }
 
@@ -55,13 +58,13 @@ export class NasaImageSearch extends LitElement {
         data.collection.items.forEach(element => {
           // Not every item has a links array field
           if (element.links[0].href !== undefined) {
-            const moonInfo = {
+            const nasaInfo = {
               imagesrc: element.links[0].href,
               title: element.data[0].title,
               description: element.data[0].description,
             };
-            console.log(moonInfo);
-            this.nasaResults.push(moonInfo);
+            console.log(nasaInfo);
+            this.nasaResults.push(nasaInfo);
           }
         });
         return data;
@@ -74,15 +77,29 @@ export class NasaImageSearch extends LitElement {
     this.page = 1;
   }
 
+  _updatePage() {
+    this.page = this.shadowRoot.querySelector('#pageInput').value;
+  }
+
   render() {
     return html`
+      <label for="page">Page Number: </label>
+      <input
+        type="number"
+        id="pageInput"
+        min="1"
+        value="1"
+        class="pageInput"
+        @change="${this._updatePage}"
+      />
+
       ${this.nasaResults.map(
         item => html`
           <accent-card
             image-src="${item.imagesrc}"
             image-align="right"
             horizontal
-            style="max-width:600px;"
+            style="max-width: 80%"
           >
             <div slot="heading">${item.title}</div>
             <div slot="content">${item.description}</div>
