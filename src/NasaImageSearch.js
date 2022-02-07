@@ -30,15 +30,6 @@ export class NasaImageSearch extends LitElement {
     if (super.firstUpdated) {
       super.firstUpdated(changedProperties);
     }
-    this.getNASAData();
-  }
-
-  updated(changedProperties) {
-    changedProperties.forEach((oldValue, propName) => {
-      if (propName === 'page' && this[propName]) {
-        this.getNASAData();
-      }
-    });
   }
 
   async getNASAData() {
@@ -58,10 +49,17 @@ export class NasaImageSearch extends LitElement {
         data.collection.items.forEach(element => {
           // Not every item has a links array field
           if (element.links[0].href !== undefined) {
+            let photographerInfo = element.data[0].secondary_creator
+              ? element.data[0].secondary_creator
+              : 'unknown';
+            photographerInfo = element.data[0].photographer
+              ? element.data[0].photographer
+              : 'unknown';
             const nasaInfo = {
               imagesrc: element.links[0].href,
               title: element.data[0].title,
               description: element.data[0].description,
+              photographer: photographerInfo,
             };
             console.log(nasaInfo);
             this.nasaResults.push(nasaInfo);
@@ -78,7 +76,14 @@ export class NasaImageSearch extends LitElement {
   }
 
   _updatePage() {
-    this.page = this.shadowRoot.querySelector('#pageInput').value;
+    if (this.shadowRoot.querySelector('#pageInput').value > 0) {
+      this.page = this.shadowRoot.querySelector('#pageInput').value;
+    }
+  }
+
+  _loadResults() {
+    this.getNASAData();
+    this.render();
   }
 
   render() {
@@ -93,6 +98,14 @@ export class NasaImageSearch extends LitElement {
         @change="${this._updatePage}"
       />
 
+      <br />
+
+      <button id="loadResults" class="pageInput" @click="${this._loadResults}">
+        Search for Rockets!
+      </button>
+
+      <br />
+
       ${this.nasaResults.map(
         item => html`
           <accent-card
@@ -102,7 +115,11 @@ export class NasaImageSearch extends LitElement {
             style="max-width: 80%"
           >
             <div slot="heading">${item.title}</div>
-            <div slot="content">${item.description}</div>
+            <div slot="content">
+              ${item.description}
+              <br />
+              <i> Photographed by: ${item.photographer} </i>
+            </div>
           </accent-card>
         `
       )}
