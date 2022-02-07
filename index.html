@@ -1,28 +1,35 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta name="Description" content="Put your description here." />
+    <base href="/" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 50px;
+        font-family: sans-serif;
+      }
+      .pageNumber {
+        width: 100px;
+      }
+    </style>
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="Description" content="Put your description here.">
-  <base href="/">
-  <style>
-    html,
-    body {
-      margin: 0;
-      padding: 50px;
-      font-family: sans-serif;
-    }
-  </style>
     <script type="module">
-      import "./nasa-image-search.js";
+      import "./src/App.js";
     </script>
-  <title>Lab 4/5</title>
-</head>
 
-<body>
-  <h1>NASA Moon example</h1>
-  <nasa-image-search></nasa-image-search>
-</body>
+    <title>Lab 4/5</title>
+  </head>
 
+  <body>
+    <h1>NASA Rockets</h1>
+    <nasa-image-search></nasa-image-search>
+
+  </body>
 </html>

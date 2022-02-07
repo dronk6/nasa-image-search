@@ -13,19 +13,16 @@ export class NasaImageSearch extends LitElement {
         padding: 25px;
         color: var(--nasa-image-search-text-color, #000);
       }
+      .pageInput {
+        margin-bottom: 20px;
+      }
     `;
-  }
-
-  constructor() {
-    super();
-    this.nasaResults = [];
-    this.nasaEndpoint =
-      'https://images-api.nasa.gov/search?q=rocket&page=1&media_type=image';
   }
 
   static get properties() {
     return {
       nasaResults: { type: Array },
+      page: { type: String, reflect: true },
     };
   }
 
@@ -33,52 +30,76 @@ export class NasaImageSearch extends LitElement {
     if (super.firstUpdated) {
       super.firstUpdated(changedProperties);
     }
-    console.log('something changed');
     this.getNASAData();
   }
 
+  updated(changedProperties) {
+    changedProperties.forEach((oldValue, propName) => {
+      if (propName === 'page' && this[propName]) {
+        this.getNASAData();
+      }
+    });
+  }
+
   async getNASAData() {
-    return fetch(this.nasaEndpoint)
+    return fetch(
+      `https://images-api.nasa.gov/search?q=rocket&page=${this.page}&media_type=image`
+    )
       .then(resp => {
-        console.log(resp);
         if (resp.ok) {
           return resp.json();
         }
         return false;
       })
       .then(data => {
-        console.log('ok');
         console.log(data);
         this.nasaResults = [];
 
         data.collection.items.forEach(element => {
           // Not every item has a links array field
-          console.log(element.links[0].href);
           if (element.links[0].href !== undefined) {
-            const moonInfo = {
+            const nasaInfo = {
               imagesrc: element.links[0].href,
               title: element.data[0].title,
               description: element.data[0].description,
             };
-            console.log(`Moon Info: ${moonInfo.imagesrc}`);
-            this.nasaResults.push(moonInfo);
+            console.log(nasaInfo);
+            this.nasaResults.push(nasaInfo);
           }
         });
-        console.log(this.nasaResults);
         return data;
       });
   }
 
+  constructor() {
+    super();
+    this.nasaResults = [];
+    this.page = 1;
+  }
+
+  _updatePage() {
+    this.page = this.shadowRoot.querySelector('#pageInput').value;
+  }
+
   render() {
-    // I repaired the index.html shit but the problem is with the accent-card tag, it's not rendering properly despite other things (img, p, etc.) doing fine.
     return html`
+      <label for="page">Page Number: </label>
+      <input
+        type="number"
+        id="pageInput"
+        min="1"
+        value="1"
+        class="pageInput"
+        @change="${this._updatePage}"
+      />
+
       ${this.nasaResults.map(
         item => html`
           <accent-card
             image-src="${item.imagesrc}"
             image-align="right"
             horizontal
-            style="max-width:600px;"
+            style="max-width: 80%"
           >
             <div slot="heading">${item.title}</div>
             <div slot="content">${item.description}</div>
