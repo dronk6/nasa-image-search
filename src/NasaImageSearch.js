@@ -112,7 +112,7 @@ export class NasaImageSearch extends LitElement {
             image-src="${item.imagesrc}"
             image-align="right"
             horizontal
-            style="max-width: 80%"
+            style="max-width: 80%; overflow: hidden;"
           >
             <div slot="heading">${item.title}</div>
             <div slot="content">
